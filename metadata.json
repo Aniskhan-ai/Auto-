@@ -1,0 +1,6 @@
+{
+  "name": "Auto",
+  "description": "An AI-powered Vibe Coding Platform for real-time full-stack website generation, editing, and previewing.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
