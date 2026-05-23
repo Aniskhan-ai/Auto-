@@ -42,7 +42,8 @@ export default function Dashboard({
     e.preventDefault();
     if (!projName.trim()) return;
 
-    if (adminConfig?.userPlan === 'free' && projects.length >= 1) {
+    const customProjects = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3');
+    if (adminConfig?.userPlan === 'free' && customProjects.length >= 1) {
       onUpgradeClick();
       return;
     }
@@ -64,7 +65,8 @@ export default function Dashboard({
         <button
           id="btn-trigger-creator"
           onClick={() => {
-            if (adminConfig?.userPlan === 'free' && projects.length >= 1) {
+            const customProjects = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3');
+            if (adminConfig?.userPlan === 'free' && customProjects.length >= 1) {
               onUpgradeClick();
             } else {
               setShowCreator(!showCreator);
@@ -164,7 +166,8 @@ export default function Dashboard({
               <p className="text-xs text-neutral-500 mt-1 mb-6">Create or select an aesthetic local template source to begin compiling.</p>
               <button
                 onClick={() => {
-                  if (adminConfig?.userPlan === 'free' && projects.length >= 1) {
+                  const customProjects = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3');
+                  if (adminConfig?.userPlan === 'free' && customProjects.length >= 1) {
                     onUpgradeClick();
                   } else {
                     setShowCreator(true);

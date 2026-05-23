@@ -72,7 +72,8 @@ export default function App() {
   };
 
   const handleCreateProject = async (name: string, category: string, description: string) => {
-    if (adminConfig?.userPlan === 'free' && projects.length >= 1) {
+    const customProjects = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3');
+    if (adminConfig?.userPlan === 'free' && customProjects.length >= 1) {
       setShowUpgradeModal(true);
       return;
     }
@@ -198,7 +199,7 @@ export default function App() {
         isConnected={true}
         activeProjectName={activeProject?.name}
         adminConfig={adminConfig}
-        projectsCount={projects.length}
+        projectsCount={projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3').length}
         onUpgradeClick={() => setShowUpgradeModal(true)}
       />
 

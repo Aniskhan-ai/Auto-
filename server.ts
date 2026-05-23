@@ -27,9 +27,10 @@ const LOGS_FILE = path.join(DATA_DIR, 'logs.json');
 /// --- DYNAMIC SOURCE TEMPLATE SEED LIBRARY ---
 const TEMPLATES_DIR = path.join(process.cwd(), 'templates');
 let LOCAL_LIBRARY_TEMPLATES: any[] = [];
+let defaultTemplates: any[] = [];
 
 function initializeLocalTemplates() {
-  const defaultTemplates = [
+  defaultTemplates = [
     {
       id: 'saas-base',
       category: 'saas',
@@ -700,7 +701,7 @@ if (fs.existsSync(PROJECTS_FILE)) {
         {
           path: 'index.html',
           type: 'html',
-          content: LOCAL_LIBRARY_TEMPLATES[0]?.files?.[0]?.content || ''
+          content: (LOCAL_LIBRARY_TEMPLATES.find(t => t.id === 'saas-base') || defaultTemplates.find(t => t.id === 'saas-base') || LOCAL_LIBRARY_TEMPLATES[0])?.files?.[0]?.content || ''
         }
       ],
       createdAt: new Date().toISOString(),
@@ -717,7 +718,7 @@ if (fs.existsSync(PROJECTS_FILE)) {
         {
           path: 'index.html',
           type: 'html',
-          content: LOCAL_LIBRARY_TEMPLATES[1]?.files?.[0]?.content || ''
+          content: (LOCAL_LIBRARY_TEMPLATES.find(t => t.id === 'ecommerce-base') || defaultTemplates.find(t => t.id === 'ecommerce-base') || LOCAL_LIBRARY_TEMPLATES[1] || LOCAL_LIBRARY_TEMPLATES[0])?.files?.[0]?.content || ''
         }
       ],
       createdAt: new Date().toISOString(),
@@ -734,7 +735,7 @@ if (fs.existsSync(PROJECTS_FILE)) {
         {
           path: 'index.html',
           type: 'html',
-          content: LOCAL_LIBRARY_TEMPLATES[2]?.files?.[0]?.content || ''
+          content: (LOCAL_LIBRARY_TEMPLATES.find(t => t.id === 'portfolio-base') || defaultTemplates.find(t => t.id === 'portfolio-base') || LOCAL_LIBRARY_TEMPLATES[2] || LOCAL_LIBRARY_TEMPLATES[0])?.files?.[0]?.content || ''
         }
       ],
       createdAt: new Date().toISOString(),
@@ -847,7 +848,8 @@ app.post('/api/projects', (req, res) => {
   }
 
   // enforce 1 project limit for free plane
-  if (adminConfig.userPlan === 'free' && projects.length >= 1) {
+  const customProjects = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3');
+  if (adminConfig.userPlan === 'free' && customProjects.length >= 1) {
     return res.status(402).json({
       error: 'limit_reached',
       message: 'Free Plan limit reached. You can only maintain 1 landing page website simultaneously on the Free Plan. Upgrade to a Paid Premium Plan to create unlimited projects!'
@@ -1078,15 +1080,18 @@ Please implement these requested modifications. Output ONLY the updated, compreh
     if (lowercasePrompt.includes('skincare') || lowercasePrompt.includes('cream') || lowercasePrompt.includes('store') || lowercasePrompt.includes('product') || lowercasePrompt.includes('skin')) {
       // Rebrand into skincare dynamically!
       // Let's change the color palette script blocks, headers, and grid
-      originalCode = LOCAL_LIBRARY_TEMPLATES[1].files[0].content; // eCommerce Skincare template
+      const t = LOCAL_LIBRARY_TEMPLATES.find(x => x.id === 'ecommerce-base') || LOCAL_LIBRARY_TEMPLATES[1] || LOCAL_LIBRARY_TEMPLATES[0];
+      originalCode = t.files[0].content; // eCommerce Skincare template
       originalCode = originalCode.replace('GlowCraft &bull; Skin Rejuvenation Store', `${activeProject.name} Cosmetic Boutique`);
       originalCode = originalCode.replace('GLOWCRAFT', activeProject.name.toUpperCase());
     } else if (lowercasePrompt.includes('saas') || lowercasePrompt.includes('software') || lowercasePrompt.includes('ai video') || lowercasePrompt.includes('tech') || lowercasePrompt.includes('cloud')) {
-      originalCode = LOCAL_LIBRARY_TEMPLATES[0].files[0].content; // SaaS App
+      const t = LOCAL_LIBRARY_TEMPLATES.find(x => x.id === 'saas-base') || LOCAL_LIBRARY_TEMPLATES[0];
+      originalCode = t.files[0].content; // SaaS App
       originalCode = originalCode.replace('AutoSaaS - High Performance Platforms', `${activeProject.name} SaaS`);
       originalCode = originalCode.replace('AUTOAPI.io', activeProject.name.toUpperCase());
     } else if (lowercasePrompt.includes('portfolio') || lowercasePrompt.includes('architect') || lowercasePrompt.includes('design') || lowercasePrompt.includes('resume')) {
-      originalCode = LOCAL_LIBRARY_TEMPLATES[2].files[0].content; // Portfolio template
+      const t = LOCAL_LIBRARY_TEMPLATES.find(x => x.id === 'portfolio-base') || LOCAL_LIBRARY_TEMPLATES[2] || LOCAL_LIBRARY_TEMPLATES[0];
+      originalCode = t.files[0].content; // Portfolio template
       originalCode = originalCode.replace('SØRENSEN DESIGN', activeProject.name.toUpperCase());
     }
 
