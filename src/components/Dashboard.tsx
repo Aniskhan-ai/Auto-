@@ -244,11 +244,11 @@ export default function Dashboard({
                 <div className="w-full h-1.5 rounded bg-[#050505] overflow-hidden">
                   <div 
                     className={`h-full rounded transition-all duration-500 ${adminConfig?.userPlan === 'premium' ? 'bg-amber-400 w-full' : 'bg-emerald-400'}`} 
-                    style={{ width: adminConfig?.userPlan === 'premium' ? '100%' : `${Math.min((projects.length / 1) * 100, 100)}%` }}
+                    style={{ width: adminConfig?.userPlan === 'premium' ? '100%' : `${Math.min((projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3').length / 1) * 100, 100)}%` }}
                   ></div>
                 </div>
                 <div className="flex justify-between text-[10px] font-mono text-neutral-500">
-                  <span>{projects.length} Workspace{projects.length !== 1 ? 's' : ''} Active</span>
+                  <span>{projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3').length} Workspace{projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3').length !== 1 ? 's' : ''} Active</span>
                   <span>{adminConfig?.userPlan === 'premium' ? 'Unlimited Credits' : '1 Free Credit limit'}</span>
                 </div>
               </div>
@@ -290,7 +290,8 @@ export default function Dashboard({
                   <div
                     key={cat.id}
                     onClick={() => {
-                      if (adminConfig?.userPlan !== 'premium' && projects.length >= 1) {
+                      const customProjectsCount = projects.filter(p => p.id !== 'proj-1' && p.id !== 'proj-2' && p.id !== 'proj-3').length;
+                      if (adminConfig?.userPlan !== 'premium' && customProjectsCount >= 1) {
                         onUpgradeClick();
                         return;
                       }
